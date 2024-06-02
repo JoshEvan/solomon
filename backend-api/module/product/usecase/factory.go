@@ -2,6 +2,7 @@ package product
 
 import (
 	"github.com/JoshEvan/solomon/driver/usecase"
+	"github.com/JoshEvan/solomon/module/product/repository/persistent"
 )
 
 type Factory interface {
@@ -10,11 +11,13 @@ type Factory interface {
 }
 
 type factoryImpl struct {
-	// db
+	db persistent.DB
 }
 
-func NewFactory() Factory {
-	return &factoryImpl{}
+func NewFactory(db persistent.DB) Factory {
+	return &factoryImpl{
+		db: db,
+	}
 }
 
 func (f *factoryImpl) NewUsecaseUpsert() usecase.Usecase {
