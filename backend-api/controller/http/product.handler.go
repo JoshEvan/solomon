@@ -2,9 +2,12 @@ package http
 
 import (
 	"context"
+	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/JoshEvan/solomon/driver/net"
+	"github.com/JoshEvan/solomon/module/product/entity"
 	product "github.com/JoshEvan/solomon/module/product/usecase"
 )
 
@@ -23,10 +26,18 @@ func CreateProductHandler(u product.Factory) HTTPHandler {
 func (p *ProductHandler) RegisterHandler(router net.Router) {
 	subrouter := router.RegisterSubRouter("/product")
 	subrouter.RegisterHandler("/upsert", p.BaseHandler.Handle(p.upsert), http.MethodPost)
-	// subrouter.RegisterHandler("/list", p.Usecase.NewShowHandler, http.MethodGet)
+	subrouter.RegisterHandler("/list", p.BaseHandler.Handle(p.index), http.MethodGet)
 }
 
 func (p *ProductHandler) upsert(ctx context.Context, r *http.Request) (interface{}, error) {
-	p.Usecase.NewUsecaseUpsert().Do(context.Background())
-	return nil, nil
+	req := entity.UpsertRequest{}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		log.Println("error parsing request", err.Error())
+		return nil, err
+	}
+	return p.Usecase.NewUsecaseUpsert(req).Do(context.Background())
+}
+
+func (p *ProductHandler) index(ctx context.Context, r *http.Request) (interface{}, error) {
+	return p.Usecase.NewUsecaseSelect().Do(context.Background())
 }

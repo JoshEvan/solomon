@@ -1,12 +1,8 @@
 package http
 
 import (
-	"context"
-	"net/http"
-
 	"github.com/JoshEvan/solomon/driver/config"
 	"github.com/JoshEvan/solomon/driver/net"
-	"github.com/JoshEvan/solomon/driver/net/handler"
 	"github.com/JoshEvan/solomon/driver/storage/pgx"
 	"github.com/JoshEvan/solomon/module/product/repository/persistent"
 	product "github.com/JoshEvan/solomon/module/product/usecase"
@@ -30,11 +26,5 @@ func InitHTTPHandler(router net.Router, cfg config.Config) {
 
 	for _, handler := range handlers {
 		handler.RegisterHandler(router)
-	}
-}
-
-func (b *BaseHandler) Handle(handlerFunc handler.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		handlerFunc(context.Background(), r)
 	}
 }
