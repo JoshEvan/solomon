@@ -1,0 +1,4 @@
+config:
+  db:
+    driver: "pgx"
+    conn_str: "user=solomon password=proverb host=db port=5432 dbname=solomon-db sslmode=disable pool_max_conns=9"

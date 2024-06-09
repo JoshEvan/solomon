@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  db:
+    container_name: db
+    image: joshevan/solomon-postgres
+    build:
+      context: backend-api
+      dockerfile: postgres.Dockerfile
+    environment:
+      - POSTGRES_USER=solomon
+      - POSTGRES_PASSWORD=proverb
+      - POSTGRES_DB=solomon-db
+    volumes:
+      - solomon-postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  app:
+    container_name: app
+    image: joshevan/solomon-backend
+    build:
+      context: backend-api
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    ports:
+      - "9099:9099"
+    links:
+      - db
+    restart: always
+
+  # frontend:
+  #   container_name: frontend
+  #   image: joshevan/solomon-frontend
+  #   build:
+  #     context: frontend
+  #     dockerfile: frontend.Dockerfile
+  #   depends_on:
+  #     - app
+  #   ports:
+  #     - "5001:5001"
+
+volumes:
+  solomon-postgres:
+    external: true
