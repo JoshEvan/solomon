@@ -2,7 +2,7 @@ package pgx
 
 import (
 	"context"
-	"fmt"
+	"log"
 
 	"github.com/JoshEvan/solomon/driver/config"
 	"github.com/jackc/pgx/v4/pgxpool"
@@ -13,7 +13,6 @@ type clientImpl struct {
 }
 
 func New(cfg config.DBConfig) *clientImpl {
-	fmt.Println(cfg.ConnStr, "config conn str")
 	poolCfg, err := pgxpool.ParseConfig(cfg.ConnStr)
 	if err != nil {
 		panic(err)
@@ -29,14 +28,18 @@ func New(cfg config.DBConfig) *clientImpl {
 	}
 }
 
-func (c *clientImpl) Dial(_ context.Context) error {
-	panic("not implemented") // TODO: Implement
+func (c *clientImpl) Dial(ctx context.Context) error {
+	if err := c.pool.Ping(ctx); err != nil {
+		log.Println("[DB] ping error", err.Error())
+		return err
+	}
+	return nil
 }
 
 func (c *clientImpl) GetPool() *pgxpool.Pool {
-	panic("not implemented") // TODO: Implement
+	return c.pool
 }
 
 func (c *clientImpl) Close() {
-	panic("not implemented") // TODO: Implement
+	c.pool.Close()
 }

@@ -16,7 +16,9 @@ type Client interface {
 
 type DB interface {
 	Execute(ctx context.Context, query string, params ...interface{}) error
+	ExecuteAndScan(ctx context.Context, dest interface{}, query string, params ...interface{}) error
 	Select(ctx context.Context, dest interface{}, query string, params ...interface{}) error
+	Get(ctx context.Context, dest interface{}, query string, params ...interface{}) error
 }
 
 func New(cfg config.DBConfig) Client {

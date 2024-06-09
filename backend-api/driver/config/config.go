@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -40,16 +39,10 @@ func Get() (cfg Config) {
 	}
 	defer file.Close()
 
-	// s := bufio.NewScanner(file)
-	// for s.Scan() {
-	// 	fmt.Println(s.Text())
-	// }
-
 	rawCfg := RawConfig{}
 	err = yaml.NewDecoder(file).Decode(&rawCfg)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("%+v\n", cfg)
 	return rawCfg.Config
 }
