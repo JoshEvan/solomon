@@ -21,7 +21,7 @@ type DB interface {
 	Get(ctx context.Context, dest interface{}, query string, params ...interface{}) error
 }
 
-func New(cfg config.DBConfig) Client {
+func NewDB(cfg config.DBConfig) Client {
 	switch cfg.Driver {
 	case config.Pgx:
 		return pgx.New(cfg)
