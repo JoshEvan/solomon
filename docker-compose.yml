@@ -16,6 +16,16 @@ services:
     ports:
       - "5432:5432"
 
+  elasticsearch:
+    image: elasticsearch:8.8.0
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - network.host=0.0.0.0
+
   app:
     container_name: app
     image: joshevan/solomon-backend
@@ -29,6 +39,15 @@ services:
     links:
       - db
     restart: always
+
+  cerebro:
+    platform: linux/amd64
+    image: lmenezes/cerebro:latest
+    ports:
+      - "9000:9000"
+    depends_on:
+     - elasticsearch
+
 
   # frontend:
   #   container_name: frontend

@@ -4,19 +4,22 @@ import (
 	"github.com/JoshEvan/solomon/driver/usecase"
 	"github.com/JoshEvan/solomon/module/product/entity"
 	"github.com/JoshEvan/solomon/module/product/repository/persistent"
+	"github.com/JoshEvan/solomon/module/product/repository/search"
 )
 
 type Factory interface {
 	NewUsecaseUpsert(req entity.UpsertRequest) usecase.Usecase
-	NewUsecaseSelect() usecase.Usecase
+	NewUsecaseSelect(req entity.SelectQuery) usecase.Usecase
 }
 
 type factoryImpl struct {
 	db persistent.DB
+	se search.SearchEngine
 }
 
-func NewFactory(db persistent.DB) Factory {
+func NewFactory(db persistent.DB, se search.SearchEngine) Factory {
 	return &factoryImpl{
 		db: db,
+		se: se,
 	}
 }

@@ -6,14 +6,14 @@ import (
 
 	"github.com/JoshEvan/solomon/driver/storage"
 	"github.com/JoshEvan/solomon/module/product/entity"
-	"github.com/google/uuid"
+	"github.com/lib/pq"
 )
 
 type DB interface {
-	Insert(context.Context, entity.Product) (uuid.UUID, error)
+	Insert(context.Context, entity.Product) (string, error)
 	Update(context.Context, entity.Product) error
 	GetAll(context.Context) ([]entity.Product, error)
-	Get(context.Context, uuid.UUID) (entity.Product, error)
+	GetBulkIds(context.Context, []string) ([]entity.Product, error)
 }
 
 type dbImpl struct {
@@ -26,16 +26,16 @@ func GetDB(db storage.DB) *dbImpl {
 	}
 }
 
-func (p *dbImpl) Insert(ctx context.Context, data entity.Product) (id uuid.UUID, err error) {
-	err = p.db.ExecuteAndScan(ctx, &id, insertQueryProduct, data.Name, data.ImgUrl)
+func (p *dbImpl) Insert(ctx context.Context, data entity.Product) (id string, err error) {
+	err = p.db.ExecuteAndScan(ctx, &id, insertQueryProduct, data.Name, data.ImgUrl, data.Price)
 	if err != nil {
-		log.Println(err.Error())
+		log.Println(insertQueryProduct, err.Error())
 	}
 	return
 }
 
 func (p *dbImpl) Update(ctx context.Context, data entity.Product) (err error) {
-	err = p.db.Execute(ctx, updateQueryProduct, data.Name, data.ImgUrl, data.Id)
+	err = p.db.Execute(ctx, updateQueryProduct, data.Name, data.ImgUrl, data.Price, data.Id)
 	if err != nil {
 		log.Println(err.Error())
 	}
@@ -45,15 +45,15 @@ func (p *dbImpl) Update(ctx context.Context, data entity.Product) (err error) {
 func (p *dbImpl) GetAll(ctx context.Context) (result []entity.Product, err error) {
 	err = p.db.Select(ctx, &result, selectAllQueryProduct)
 	if err != nil {
-		log.Println(err.Error())
+		log.Println(selectAllQueryProduct, err.Error())
 	}
 	return
 }
 
-func (p *dbImpl) Get(ctx context.Context, id uuid.UUID) (result entity.Product, err error) {
-	err = p.db.Get(ctx, &result, selectByIdQueryProduct, id)
+func (p *dbImpl) GetBulkIds(ctx context.Context, ids []string) (result []entity.Product, err error) {
+	err = p.db.Select(ctx, &result, selectByIdQueryProduct, pq.Array(ids))
 	if err != nil {
-		log.Println(err.Error())
+		log.Println(selectByIdQueryProduct, err.Error())
 	}
 	return
 }

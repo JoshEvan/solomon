@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/JoshEvan/solomon/driver/net"
+	"github.com/JoshEvan/solomon/driver/util"
 	"github.com/JoshEvan/solomon/module/product/entity"
 	product "github.com/JoshEvan/solomon/module/product/usecase"
 )
@@ -35,9 +36,18 @@ func (p *ProductHandler) upsert(ctx context.Context, r *http.Request) (interface
 		log.Println("error parsing request", err.Error())
 		return nil, err
 	}
-	return p.Usecase.NewUsecaseUpsert(req).Do(context.Background())
+	return p.Usecase.NewUsecaseUpsert(req).Do(ctx)
 }
 
 func (p *ProductHandler) index(ctx context.Context, r *http.Request) (interface{}, error) {
-	return p.Usecase.NewUsecaseSelect().Do(context.Background())
+	req := entity.SelectQuery{
+		Page:       util.StringToIntUnsafe(r.FormValue(entity.PageFormValue)),
+		Limit:      util.StringToIntUnsafe(r.FormValue(entity.LimitFormValue)),
+		SearchText: r.FormValue(entity.SearchTextFormValue),
+		SortBy:     r.FormValue(entity.SortByFormValue),
+		IsSortAsc:  util.StringToIntUnsafe(r.FormValue(entity.IsSortAscFormValue)) == 1,
+		PriceMin:   util.StringToFloat64Unsafe(r.FormValue(entity.PriceMinFormValue)),
+		PriceMax:   util.StringToFloat64Unsafe(r.FormValue(entity.PriceMaxFormValue)),
+	}
+	return p.Usecase.NewUsecaseSelect(req).Do(ctx)
 }

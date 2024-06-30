@@ -16,18 +16,24 @@ type RawConfig struct {
 }
 
 type Config struct {
-	DBConfig DBConfig `yaml:"db"`
+	DBConfig     DBConfig     `yaml:"db"`
+	SearchConfig SearchConfig `yaml:"search_engine"`
 }
 
 type dbDriver string
 
 const (
-	Pgx dbDriver = "pgx"
+	Pgx     dbDriver = "pgx"
+	IndexES string   = "gallery"
 )
 
 type DBConfig struct {
 	Driver  dbDriver `yaml:"driver"`
 	ConnStr string   `yaml:"conn_str"`
+}
+
+type SearchConfig struct {
+	Address string `yaml:"address"`
 }
 
 func Get() (cfg Config) {
