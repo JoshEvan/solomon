@@ -3,6 +3,7 @@ package product
 import (
 	"github.com/JoshEvan/solomon/driver/usecase"
 	"github.com/JoshEvan/solomon/module/product/entity"
+	"github.com/JoshEvan/solomon/module/product/repository/cache"
 	"github.com/JoshEvan/solomon/module/product/repository/persistent"
 	"github.com/JoshEvan/solomon/module/product/repository/search"
 )
@@ -13,13 +14,15 @@ type Factory interface {
 }
 
 type factoryImpl struct {
-	db persistent.DB
-	se search.SearchEngine
+	db    persistent.DB
+	se    search.SearchEngine
+	cache cache.Cache
 }
 
-func NewFactory(db persistent.DB, se search.SearchEngine) Factory {
+func NewFactory(db persistent.DB, se search.SearchEngine, cache cache.Cache) Factory {
 	return &factoryImpl{
-		db: db,
-		se: se,
+		db:    db,
+		se:    se,
+		cache: cache,
 	}
 }
