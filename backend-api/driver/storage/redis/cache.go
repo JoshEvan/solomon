@@ -29,3 +29,7 @@ func (r *RedisClient) Get(ctx context.Context, key string) (interface{}, error) 
 func (r *RedisClient) Set(ctx context.Context, key string, val interface{}, ttlMSec int) error {
 	return r.client.Set(ctx, key, val, time.Duration(ttlMSec)*time.Millisecond).Err()
 }
+
+func (r *RedisClient) Del(ctx context.Context, key string) error {
+	return r.client.Del(ctx, key).Err()
+}

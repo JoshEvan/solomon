@@ -14,6 +14,7 @@ import (
 type Cache interface {
 	Get(ctx context.Context, id string) (entity.Product, error)
 	Upsert(context.Context, entity.Product) error
+	Invalidate(context.Context, string) error
 }
 
 type cacheImpl struct {
@@ -53,5 +54,13 @@ func (c *cacheImpl) Upsert(ctx context.Context, product entity.Product) error {
 		log.Println(err.Error())
 		return err
 	}
-	return c.cache.Set(ctx, fmt.Sprintf(cacheKeyProductTemplate, product.Id), val, int(ttlMSecProduct.Milliseconds()))
+	err = c.cache.Set(ctx, fmt.Sprintf(cacheKeyProductTemplate, product.Id), val, int(ttlMSecProduct.Milliseconds()))
+	if err != nil {
+		log.Println("UPSERT", err)
+	}
+	return err
+}
+
+func (c *cacheImpl) Invalidate(ctx context.Context, id string) error {
+	return c.cache.Del(ctx, fmt.Sprintf(cacheKeyProductTemplate, id))
 }

@@ -5,21 +5,24 @@ import (
 
 	"github.com/JoshEvan/solomon/driver/usecase"
 	"github.com/JoshEvan/solomon/module/product/entity"
+	"github.com/JoshEvan/solomon/module/product/repository/cache"
 	"github.com/JoshEvan/solomon/module/product/repository/persistent"
 	"github.com/JoshEvan/solomon/module/product/repository/search"
 )
 
 type upsertUsecase struct {
-	req entity.UpsertRequest
-	db  persistent.DB
-	se  search.SearchEngine
+	req   entity.UpsertRequest
+	db    persistent.DB
+	cache cache.Cache
+	se    search.SearchEngine
 }
 
 func (f *factoryImpl) NewUsecaseUpsert(req entity.UpsertRequest) usecase.Usecase {
 	return &upsertUsecase{
-		db:  f.db,
-		se:  f.se,
-		req: req,
+		db:    f.db,
+		se:    f.se,
+		cache: f.cache,
+		req:   req,
 	}
 }
 
@@ -48,6 +51,9 @@ func (u *upsertUsecase) Do(ctx context.Context) (ret interface{}, err error) {
 	} else {
 		err := u.db.Update(ctx, entity.Product(u.req))
 		if err != nil {
+			return nil, err
+		}
+		if err := u.cache.Invalidate(ctx, u.req.Id); err != nil {
 			return nil, err
 		}
 		err = u.se.Update(ctx, entity.IndexedProduct{

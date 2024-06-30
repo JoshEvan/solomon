@@ -10,6 +10,7 @@ import (
 type Cache interface {
 	Get(ctx context.Context, key string) (interface{}, error)
 	Set(ctx context.Context, key string, val interface{}, ttlMSec int) error
+	Del(ctx context.Context, key string) error
 }
 
 func NewCache(cfg config.CacheConfig) Cache {
