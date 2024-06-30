@@ -16,9 +16,9 @@ tag (
 	name VARCHAR
 );
 
-CREATE TABLE IF NOT EXISTS
-product_tagging (
-	id uuid DEFAULT gen_random_uuid() PRIMARY KEY, 
-	product_id uuid FOREIGN KEY product,
-	tag_id smallint FOREIGN KEY tag
-);
+-- CREATE TABLE IF NOT EXISTS
+-- product_tagging (
+-- 	id uuid DEFAULT gen_random_uuid() PRIMARY KEY, 
+-- 	product_id uuid FOREIGN KEY product,
+-- 	tag_id smallint FOREIGN KEY tag
+-- );

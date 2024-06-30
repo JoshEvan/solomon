@@ -24,6 +24,7 @@ services:
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
+      - network.host=0.0.0.0
 
   app:
     container_name: app
@@ -38,6 +39,15 @@ services:
     links:
       - db
     restart: always
+
+  cerebro:
+    platform: linux/amd64
+    image: lmenezes/cerebro:latest
+    ports:
+      - "9000:9000"
+    depends_on:
+     - elasticsearch
+
 
   # frontend:
   #   container_name: frontend

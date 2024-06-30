@@ -23,7 +23,8 @@ type Config struct {
 type dbDriver string
 
 const (
-	Pgx dbDriver = "pgx"
+	Pgx     dbDriver = "pgx"
+	IndexES string   = "gallery"
 )
 
 type DBConfig struct {

@@ -5,7 +5,7 @@ const (
 	INSERT INTO product(
 		name, img, price
 	) VALUES (
-		$1,$2
+		$1,$2,$3
 	) RETURNING id;
 	`
 
@@ -25,6 +25,6 @@ const (
 	selectByIdQueryProduct = `
 		SELECT id, name, img, price
 		FROM product
-		WHERE id = $1;
+		WHERE id = ANY($1);
 	`
 )

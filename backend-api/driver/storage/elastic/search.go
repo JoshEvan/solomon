@@ -2,6 +2,7 @@ package elastic
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/JoshEvan/solomon/driver/storage/entity"
@@ -24,6 +25,7 @@ type ElasticResult struct {
 func New(cfg entity.Config) *ElasticClient {
 	client, err := elastic.NewClient(
 		elastic.SetURL(cfg.Address),
+		elastic.SetSniff(false),
 	)
 	if err != nil {
 		panic(err)
@@ -39,10 +41,11 @@ func (e *ElasticClient) Search(ctx context.Context, query entity.SearchQuery, pa
 	searchResult, err := e.client.Search().
 		Index(query.SearchSpace).
 		Query(toESQuery(query.Params)).
-		Sort(sorting.SortBy, sorting.IsSortAsc).
+		// Sort(sorting.SortBy, sorting.IsSortAsc).
 		From(pagination.StartFrom()).
 		Size(pagination.Limit).
-		TimeoutInMillis(e.timeoutInMillis).Do(ctx)
+		TimeoutInMillis(e.timeoutInMillis).
+		Do(ctx)
 
 	if err != nil {
 		log.Println(err.Error())
@@ -72,9 +75,10 @@ func toESQuery(params map[string]entity.SearchQueryCriteria) (q *elastic.BoolQue
 			}
 		case entity.SearchContain:
 			if val, ok := v.Val.(string); ok {
-				q = q.Should(elastic.NewPrefixQuery(k, val))
-				q = q.Should(elastic.NewMatchPhrasePrefixQuery(k, val))
-				q = q.MinimumNumberShouldMatch(1)
+				q = q.Should(elastic.NewMatchBoolPrefixQuery(k, val))
+				q = q.Should(elastic.NewMatchQuery(k, val))
+				q = q.Should(elastic.NewMatchPhraseQuery(k, val))
+				fmt.Println("SHOULD ", k, val)
 			}
 		}
 	}
@@ -82,6 +86,9 @@ func toESQuery(params map[string]entity.SearchQueryCriteria) (q *elastic.BoolQue
 	return
 }
 
-func (r *ElasticResult) GetData() interface{} {
-	return nil
+func (r *ElasticResult) GetDataList() (dataList []interface{}) {
+	for _, e := range r.Hits.Hits {
+		dataList = append(dataList, e.Source)
+	}
+	return
 }

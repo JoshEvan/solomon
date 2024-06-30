@@ -11,7 +11,6 @@ type SearchQuery struct {
 
 type SearchDocument struct {
 	SearchSpace string
-	DataType    string
 	Id          string
 	Data        interface{}
 }
@@ -45,9 +44,13 @@ type SearchSorting struct {
 }
 
 type SearchResult interface {
-	GetData() interface{}
+	GetDataList() []interface{}
 }
 
 func (p *SearchPagination) StartFrom() int {
-	return (p.Page - 1) * p.Limit
+	from := (p.Page - 1) * p.Limit
+	if from < 0 {
+		from = 0
+	}
+	return from
 }

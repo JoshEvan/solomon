@@ -5,7 +5,7 @@ build:
 	go build -o api .\
 
 run:
-	(CONFIG_PATH=./etc/dev.yml cd ./backend-api && ./api)
+	(CONFIG_PATH=./etc/dev.yml ./api)
 
 recompile-docker:
 	BUILDKIT_PROGRESS=plain docker compose up --force-recreate --build
