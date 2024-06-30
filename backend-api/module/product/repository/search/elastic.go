@@ -3,7 +3,6 @@ package search
 import (
 	"context"
 	"encoding/json"
-	"log"
 
 	"github.com/JoshEvan/solomon/driver/config"
 	"github.com/JoshEvan/solomon/driver/storage"
@@ -45,8 +44,6 @@ func (s *searchEngineImpl) Search(ctx context.Context, searchQuery entity.Search
 		}
 	}
 
-	jsonS, _ := json.Marshal(params)
-	log.Println(string(jsonS))
 	res, err := s.se.Search(ctx, entitySearch.SearchQuery{
 		SearchSpace: config.IndexES,
 		Params:      params,

@@ -2,7 +2,6 @@ package elastic
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/JoshEvan/solomon/driver/storage/entity"
@@ -78,7 +77,6 @@ func toESQuery(params map[string]entity.SearchQueryCriteria) (q *elastic.BoolQue
 				q = q.Should(elastic.NewMatchBoolPrefixQuery(k, val))
 				q = q.Should(elastic.NewMatchQuery(k, val))
 				q = q.Should(elastic.NewMatchPhraseQuery(k, val))
-				fmt.Println("SHOULD ", k, val)
 			}
 		}
 	}
