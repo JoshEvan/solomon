@@ -16,9 +16,10 @@ type RawConfig struct {
 }
 
 type Config struct {
-	DBConfig     DBConfig     `yaml:"db"`
-	SearchConfig SearchConfig `yaml:"search_engine"`
-	CacheConfig  CacheConfig  `yaml:"cache"`
+	DBConfig       DBConfig       `yaml:"db"`
+	SearchConfig   SearchConfig   `yaml:"search_engine"`
+	CacheConfig    CacheConfig    `yaml:"cache"`
+	EventBusConfig EventBusConfig `yaml:"event_bus"`
 }
 
 type dbDriver string
@@ -40,6 +41,10 @@ type SearchConfig struct {
 type CacheConfig struct {
 	Address  string `yaml:"address"`
 	Password string `yaml:"password"`
+}
+
+type EventBusConfig struct {
+	PublishAddress string `yaml:"publish_address"`
 }
 
 func Get() (cfg Config) {

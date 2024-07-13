@@ -1,6 +1,7 @@
 package http
 
 import (
+	"github.com/JoshEvan/solomon/driver/bus"
 	"github.com/JoshEvan/solomon/driver/config"
 	"github.com/JoshEvan/solomon/driver/net"
 	"github.com/JoshEvan/solomon/driver/storage"
@@ -27,6 +28,7 @@ func InitHTTPHandler(router net.Router, cfg config.Config) {
 				persistent.GetDB(pgx.NewDB(pgx.New(cfg.DBConfig))),
 				search.GetSearchEngine(elastic.New(entity.Config(cfg.SearchConfig))),
 				cache.GetCache(storage.NewCache(cfg.CacheConfig)),
+				bus.NewEventPublisher(cfg.EventBusConfig),
 			),
 		),
 	}

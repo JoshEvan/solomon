@@ -7,3 +7,5 @@ config:
   cache:
     address: "redis:6379"
     password: "proverb"
+  event_bus:
+    publish_address: "nsqd:4150"

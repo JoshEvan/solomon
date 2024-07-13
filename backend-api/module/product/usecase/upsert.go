@@ -3,6 +3,7 @@ package product
 import (
 	"context"
 
+	"github.com/JoshEvan/solomon/driver/bus"
 	"github.com/JoshEvan/solomon/driver/usecase"
 	"github.com/JoshEvan/solomon/module/product/entity"
 	"github.com/JoshEvan/solomon/module/product/repository/cache"
@@ -11,18 +12,20 @@ import (
 )
 
 type upsertUsecase struct {
-	req   entity.UpsertRequest
-	db    persistent.DB
-	cache cache.Cache
-	se    search.SearchEngine
+	req      entity.UpsertRequest
+	db       persistent.DB
+	cache    cache.Cache
+	se       search.SearchEngine
+	eventBus bus.EventBusProducer
 }
 
 func (f *factoryImpl) NewUsecaseUpsert(req entity.UpsertRequest) usecase.Usecase {
 	return &upsertUsecase{
-		db:    f.db,
-		se:    f.se,
-		cache: f.cache,
-		req:   req,
+		db:       f.db,
+		se:       f.se,
+		cache:    f.cache,
+		eventBus: f.eventBus,
+		req:      req,
 	}
 }
 
@@ -34,7 +37,8 @@ func (u *upsertUsecase) Do(ctx context.Context) (ret interface{}, err error) {
 			return nil, err
 		}
 	}
-	if len(existed) == 0 {
+	isUpdate := len(existed) == 0
+	if !isUpdate {
 		id, err := u.db.Insert(ctx, entity.Product(u.req))
 		if err != nil {
 			return nil, err
@@ -65,5 +69,9 @@ func (u *upsertUsecase) Do(ctx context.Context) (ret interface{}, err error) {
 			return nil, err
 		}
 	}
+	u.eventBus.Produce(ctx, entity.EventUpsertES, entity.EventBusUpsertESRequest{
+		UpsertRequest: u.req,
+		IsUpdate:      isUpdate,
+	})
 	return u.req, nil
 }

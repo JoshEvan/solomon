@@ -32,3 +32,12 @@ type SelectQuery struct {
 	PriceMin   float64
 	PriceMax   float64
 }
+
+const (
+	EventUpsertES = "event_solomon_upsert_product_es"
+)
+
+type EventBusUpsertESRequest struct {
+	IsUpdate bool `json:"is_update"`
+	UpsertRequest
+}
