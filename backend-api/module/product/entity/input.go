@@ -1,5 +1,7 @@
 package entity
 
+import "time"
+
 type UpsertRequest struct {
 	Id     string  `json:"id"`
 	Name   string  `json:"name"`
@@ -38,6 +40,7 @@ const (
 )
 
 type EventBusUpsertESRequest struct {
-	IsUpdate bool `json:"is_update"`
+	IsUpdate  bool      `json:"is_update"`
+	Timestamp time.Time `json:"timestamp"`
 	UpsertRequest
 }

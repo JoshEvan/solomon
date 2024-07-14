@@ -2,6 +2,7 @@ package product
 
 import (
 	"context"
+	"time"
 
 	"github.com/JoshEvan/solomon/driver/bus"
 	"github.com/JoshEvan/solomon/driver/usecase"
@@ -71,6 +72,7 @@ func (u *upsertUsecase) Do(ctx context.Context) (ret interface{}, err error) {
 	}
 	u.eventBus.Produce(ctx, entity.EventUpsertES, entity.EventBusUpsertESRequest{
 		UpsertRequest: u.req,
+		Timestamp:     time.Now(),
 		IsUpdate:      isUpdate,
 	})
 	return u.req, nil
