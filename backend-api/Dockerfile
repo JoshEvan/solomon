@@ -13,7 +13,7 @@ RUN echo $(ls -la /etc/files/solomon-api)
 # RUN echo $(pwd)
 RUN go mod tidy
 
-RUN go build -o api .
+RUN go build -o api ./cmd/app
 
 ENTRYPOINT ["/app/api"]
 

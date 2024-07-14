@@ -11,15 +11,19 @@ const (
 	confPathEnvName = "CONFIG_PATH"
 )
 
+type EventBusTopic string
+type EventBusConsumers map[EventBusTopic]EventBusConsumer
+
 type RawConfig struct {
 	Config Config `yaml:"config"`
 }
 
 type Config struct {
-	DBConfig       DBConfig       `yaml:"db"`
-	SearchConfig   SearchConfig   `yaml:"search_engine"`
-	CacheConfig    CacheConfig    `yaml:"cache"`
-	EventBusConfig EventBusConfig `yaml:"event_bus"`
+	DBConfig       DBConfig               `yaml:"db"`
+	SearchConfig   SearchConfig           `yaml:"search_engine"`
+	CacheConfig    CacheConfig            `yaml:"cache"`
+	EventBusConfig EventBusConfig         `yaml:"event_bus"`
+	Consumer       EventBusConsumerConfig `yaml:"consumer"`
 }
 
 type dbDriver string
@@ -45,6 +49,16 @@ type CacheConfig struct {
 
 type EventBusConfig struct {
 	PublishAddress string `yaml:"publish_address"`
+}
+
+type EventBusConsumerConfig struct {
+	ListenAddress string            `yaml:"listen_address"`
+	Listen        EventBusConsumers `yaml:"listen"`
+}
+
+type EventBusConsumer struct {
+	Topic   EventBusTopic `yaml:"topic"`
+	Channel string        `yaml:"channel"`
 }
 
 func Get() (cfg Config) {
