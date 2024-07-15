@@ -68,10 +68,24 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - db
+      - redis
     ports:
       - "9099:9099"
     links:
       - db
+    restart: always
+
+  app-consumer:
+    container_name: app-consumer
+    build:
+      context: backend-api
+      dockerfile: bus.Dockerfile
+    depends_on:
+      - db
+      - elasticsearch
+    links:
+      - db
+      - elasticsearch
     restart: always
 
   cerebro:

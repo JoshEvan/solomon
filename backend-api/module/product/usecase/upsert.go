@@ -2,6 +2,7 @@ package product
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/JoshEvan/solomon/driver/bus"
@@ -30,7 +31,18 @@ func (f *factoryImpl) NewUsecaseUpsert(req entity.UpsertRequest) usecase.Usecase
 	}
 }
 
+func (u *upsertUsecase) Validate(ctx context.Context) (err error) {
+	if u.req.Name == "" || u.req.Price < 0 {
+		return errors.New("invalid request")
+	}
+	return nil
+}
+
 func (u *upsertUsecase) Do(ctx context.Context) (ret interface{}, err error) {
+	if err := u.Validate(ctx); err != nil {
+		return nil, err
+	}
+
 	var existed []entity.Product
 	if u.req.Id != "" {
 		existed, err = u.db.GetBulkIds(ctx, []string{u.req.Id})
@@ -40,7 +52,7 @@ func (u *upsertUsecase) Do(ctx context.Context) (ret interface{}, err error) {
 	}
 	isUpdate := len(existed) == 0
 	if !isUpdate {
-		id, err := u.db.Insert(ctx, entity.Product(u.req))
+		id, err := u.db.Insert(ctx, u.req.ToProduct())
 		if err != nil {
 			return nil, err
 		}
@@ -54,7 +66,7 @@ func (u *upsertUsecase) Do(ctx context.Context) (ret interface{}, err error) {
 			return nil, err
 		}
 	} else {
-		err := u.db.Update(ctx, entity.Product(u.req))
+		err := u.db.Update(ctx, u.req.ToProduct())
 		if err != nil {
 			return nil, err
 		}

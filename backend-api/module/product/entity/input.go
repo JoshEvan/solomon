@@ -44,3 +44,12 @@ type EventBusUpsertESRequest struct {
 	Timestamp time.Time `json:"timestamp"`
 	UpsertRequest
 }
+
+func (r *UpsertRequest) ToProduct() Product {
+	return Product{
+		Id:     r.Id,
+		Name:   r.Name,
+		Price:  r.Price,
+		ImgUrl: r.ImgUrl,
+	}
+}

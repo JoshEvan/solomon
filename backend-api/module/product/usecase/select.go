@@ -2,6 +2,7 @@ package product
 
 import (
 	"context"
+	"errors"
 
 	"github.com/JoshEvan/solomon/driver/usecase"
 	"github.com/JoshEvan/solomon/module/product/entity"
@@ -26,7 +27,18 @@ func (f *factoryImpl) NewUsecaseSelect(req entity.SelectQuery) usecase.Usecase {
 	}
 }
 
+func (u *selectUsecase) Validate(ctx context.Context) error {
+	if u.req.Page < 0 || u.req.Limit < 0 {
+		return errors.New("invalid request")
+	}
+	return nil
+}
+
 func (u *selectUsecase) Do(ctx context.Context) (ret interface{}, err error) {
+	if err := u.Validate(ctx); err != nil {
+		return nil, err
+	}
+
 	found, err := u.se.Search(ctx, entity.SearchProductRequest{
 		SearchText: u.req.SearchText,
 		PriceMin:   u.req.PriceMin,
