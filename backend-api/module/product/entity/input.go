@@ -1,5 +1,7 @@
 package entity
 
+import "time"
+
 type UpsertRequest struct {
 	Id     string  `json:"id"`
 	Name   string  `json:"name"`
@@ -31,4 +33,23 @@ type SelectQuery struct {
 	IsSortAsc  bool
 	PriceMin   float64
 	PriceMax   float64
+}
+
+const (
+	EventUpsertES = "event_solomon_upsert_product_es"
+)
+
+type EventBusUpsertESRequest struct {
+	IsUpdate  bool      `json:"is_update"`
+	Timestamp time.Time `json:"timestamp"`
+	UpsertRequest
+}
+
+func (r *UpsertRequest) ToProduct() Product {
+	return Product{
+		Id:     r.Id,
+		Name:   r.Name,
+		Price:  r.Price,
+		ImgUrl: r.ImgUrl,
+	}
 }

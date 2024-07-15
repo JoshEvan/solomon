@@ -1,10 +1,14 @@
 package entity
 
+import "time"
+
 type Product struct {
-	Id     string  `json:"id" db:"id"`
-	Name   string  `json:"name" db:"name"`
-	Price  float64 `json:"price"`
-	ImgUrl string  `json:"img_url" db:"img"`
+	Id         string    `json:"id" db:"id"`
+	Name       string    `json:"name" db:"name"`
+	Price      float64   `json:"price"`
+	ImgUrl     string    `json:"img_url" db:"img"`
+	CreateTime time.Time `json:"create_time" db:"create_time"`
+	UpdateTime time.Time `json:"update_time" db:"update_time"`
 }
 
 type IndexedProduct struct {

@@ -38,6 +38,28 @@ services:
       - REDIS_PASSWORD=proverb
       - REDIS_PORT=6379
 
+  nsqlookupd:
+    image: nsqio/nsq
+    command: /nsqlookupd
+    ports:
+      - "4160"
+      - "4161"
+  nsqd:
+    image: nsqio/nsq
+    command: /nsqd --lookupd-tcp-address=nsqlookupd:4160
+    depends_on:
+      - nsqlookupd
+    ports:
+      - "4150"
+      - "4151"
+  nsqadmin:
+    image: nsqio/nsq
+    command: /nsqadmin --lookupd-http-address=nsqlookupd:4161
+    depends_on:
+      - nsqlookupd  
+    ports:
+      - "4171:4171"
+
   app:
     container_name: app
     image: joshevan/solomon-backend
@@ -46,10 +68,24 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - db
+      - redis
     ports:
       - "9099:9099"
     links:
       - db
+    restart: always
+
+  app-consumer:
+    container_name: app-consumer
+    build:
+      context: backend-api
+      dockerfile: bus.Dockerfile
+    depends_on:
+      - db
+      - elasticsearch
+    links:
+      - db
+      - elasticsearch
     restart: always
 
   cerebro:

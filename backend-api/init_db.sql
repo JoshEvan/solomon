@@ -6,7 +6,9 @@ product(
 	id uuid DEFAULT gen_random_uuid() PRIMARY KEY, 
 	name VARCHAR, 
 	img VARCHAR,
-	price NUMERIC
+	price NUMERIC,
+	create_time timestamp DEFAULT NOW(),
+	update_time timestamp DEFAULT NOW()
 );
 
 

@@ -7,3 +7,12 @@ config:
   cache:
     address: "redis:6379"
     password: "proverb"
+  event_bus:
+    publish_address: "nsqd:4150"
+
+  consumer:
+    listen_address: "nsqlookupd:4161"
+    listen:
+      event_solomon_upsert_product_es:
+        topic: "event_solomon_upsert_product_es"
+        channel: "solomon"

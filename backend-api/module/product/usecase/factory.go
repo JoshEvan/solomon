@@ -1,6 +1,7 @@
 package product
 
 import (
+	"github.com/JoshEvan/solomon/driver/bus"
 	"github.com/JoshEvan/solomon/driver/usecase"
 	"github.com/JoshEvan/solomon/module/product/entity"
 	"github.com/JoshEvan/solomon/module/product/repository/cache"
@@ -14,15 +15,17 @@ type Factory interface {
 }
 
 type factoryImpl struct {
-	db    persistent.DB
-	se    search.SearchEngine
-	cache cache.Cache
+	db       persistent.DB
+	se       search.SearchEngine
+	cache    cache.Cache
+	eventBus bus.EventBusProducer
 }
 
-func NewFactory(db persistent.DB, se search.SearchEngine, cache cache.Cache) Factory {
+func NewFactory(db persistent.DB, se search.SearchEngine, cache cache.Cache, eventBus bus.EventBusProducer) Factory {
 	return &factoryImpl{
-		db:    db,
-		se:    se,
-		cache: cache,
+		db:       db,
+		se:       se,
+		cache:    cache,
+		eventBus: eventBus,
 	}
 }

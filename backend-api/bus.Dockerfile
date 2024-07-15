@@ -10,10 +10,8 @@ COPY ./etc /etc/files/solomon-api
 ENV CONFIG_PATH=/etc/files/solomon-api/dev.yml
 
 RUN echo $(ls -la /etc/files/solomon-api)
-# RUN echo $(pwd)
 RUN go mod tidy
 
-RUN go build -o api ./cmd/app
+RUN go build -o consumer ./cmd/consumer
 
-ENTRYPOINT ["/app/api"]
-
+ENTRYPOINT ["/app/consumer"]
