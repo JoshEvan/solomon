@@ -1,0 +1,1 @@
+export {FullWidthTabs} from './Tabs';

@@ -1,0 +1,5 @@
+{
+	"presets": ["@babel/env","@babel/react","@babel/typescript"],
+	"plugins": ["transform-class-properties"]
+}
+// plugin yg dibutuhkan, khusus ini harus " ga bisa '
