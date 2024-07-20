@@ -4,13 +4,6 @@
 ![Progress](https://progress-bar.dev/100/?title=Backend)
 ![Progress](https://progress-bar.dev/0/?title=FrontEnd)
 
-Built with:
-![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)
-![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
-![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
-![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)
-![ElasticSearch](https://img.shields.io/badge/-ElasticSearch-005571?style=for-the-badge&logo=elasticsearch)
-
 
 Solomon is a simple web app to support product/item/merchandise gallery.
 
@@ -20,6 +13,14 @@ Solomon is a simple web app to support product/item/merchandise gallery.
 | 2. filter product by price range |
 | 3. pagination |
 | 4. add / update product  |
+
+## Technical Stack
+Built with:
+![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white) Clean Architecture
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)
+![ElasticSearch](https://img.shields.io/badge/-ElasticSearch-005571?style=for-the-badge&logo=elasticsearch)
 
 
 ## System Architecture
@@ -67,4 +68,31 @@ class uct2 BT
 class uct3 BT
 class uct4 BT
 classDef BT stroke:transparent,fill:transparent,font:center
+```
+
+## Code Architecture
+There are no backward arrows from inner to outer layer
+![image](https://github.com/user-attachments/assets/347bed5d-fb41-4aea-a6f3-0a3da262e63d)
+
+
+## System Flow
+
+### Search / Filter Products
+```mermaid
+sequenceDiagram
+title Search / Filter Products
+participant Client
+participant App
+participant ES as Search Engine
+    Client->>+App: Upsert product
+    App->>+ES: Query by search keyword/filter
+    ES-->>-App: search result: product id
+    App->>+Cache: get product detail by product id
+    Cache-->>-App: product details
+    alt not exist in cache
+        App->>+DB: query product detail by product id
+        DB-->>-App: product details
+        App--)Cache: set product detail cache
+    end
+    App-->>-Client: return product details
 ```
