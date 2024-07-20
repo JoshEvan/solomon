@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FindComputer</title>
+    <link rel="icon" href="./src/assets/imgs/logo.png">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+   integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+   <link href='https://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet'>
+   <style>
+        *{
+          font-family: 'Quicksand', sans-serif
+        }
+        #loading-img {
+                -webkit-animation: rotation 2s infinite linear;
+                animation-timing-function: ease-in-out;
+        }
+        @-webkit-keyframes rotation {
+                from {
+                        -webkit-transform: rotate(0deg);
+                }
+                to {
+                        -webkit-transform: rotate(359deg);
+                }
+        }
+    </style>
+</head>
+<body>
+    <div id="app-root"></div>
+    <script src="/build/bundle.js"></script>
+</body>
+</html>

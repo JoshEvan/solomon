@@ -1,0 +1,1 @@
+export { TextAreaWValidation } from './text_area';
