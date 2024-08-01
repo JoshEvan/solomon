@@ -21,6 +21,7 @@ Built with:
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)
 ![ElasticSearch](https://img.shields.io/badge/-ElasticSearch-005571?style=for-the-badge&logo=elasticsearch)
+NSQ Message Queue
 
 
 ## System Architecture
@@ -73,26 +74,3 @@ classDef BT stroke:transparent,fill:transparent,font:center
 ## Code Architecture
 There are no backward arrows from inner to outer layer
 ![image](https://github.com/user-attachments/assets/347bed5d-fb41-4aea-a6f3-0a3da262e63d)
-
-
-## System Flow
-
-### Search / Filter Products
-```mermaid
-sequenceDiagram
-title Search / Filter Products
-participant Client
-participant App
-participant ES as Search Engine
-    Client->>+App: Upsert product
-    App->>+ES: Query by search keyword/filter
-    ES-->>-App: search result: product id
-    App->>+Cache: get product detail by product id
-    Cache-->>-App: product details
-    alt not exist in cache
-        App->>+DB: query product detail by product id
-        DB-->>-App: product details
-        App--)Cache: set product detail cache
-    end
-    App-->>-Client: return product details
-```
